@@ -8,6 +8,12 @@ import api from "../utils/api";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
+import * as Auth from "../utils/Auth";
+import Registration from "./Registration";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
+import ProtectedRoute from "./ProtectedRoute";
+import Login from "./Login";
+import InfoTooltip from "./InfoTooltip";
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
@@ -20,6 +26,13 @@ function App() {
   const handleEditProfileClick = () => setIsEditProfilePopupOpen(true);
   const handleAddPlaceClick = () => setIsAddPlacePopupOpen(true);
   const handleEditAvatarClick = () => setIsEditAvatarPopupOpen(true);
+
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [isDoneSignUp, setIsDoneSignUp] = useState(false);
+  const [loggedEmail, setLoggedEmail] = useState("");
+  const [isInfoTooltipOpen, setIsInfoTooltipOpen] = useState(false);
+
+  
 
   const handleCardClick = (props) => {
     setSelectedCard(props);
@@ -56,10 +69,14 @@ function App() {
   function handleCardLike(card) {
     const isLiked = card.likes.some((i) => i._id === currentUser._id);
 
-    api.toggleLike(card._id, isLiked).then((newCard) => {
-      setCards((state) => state.map((c) => (c._id === card._id ? newCard : c)));
-    })
-    .catch((err) => console.log(`Ошибка лайка: ${err}`));
+    api
+      .toggleLike(card._id, isLiked)
+      .then((newCard) => {
+        setCards((state) =>
+          state.map((c) => (c._id === card._id ? newCard : c))
+        );
+      })
+      .catch((err) => console.log(`Ошибка лайка: ${err}`));
   }
 
   function handleCardDelete(card) {
@@ -102,18 +119,84 @@ function App() {
       .catch((err) => console.log(`Ошибка обновления данных профиля: ${err}`));
   }
 
+  const navigate = useNavigate();
+
+  function handleRegistration(password, email) {
+    Auth.register(password, email).then(
+      (data) => {
+        console.log(data);
+        setIsDoneSignUp(true);
+        setIsInfoTooltipOpen(true);
+        navigate("/sign-in");
+      },
+      (err) => {
+        console.log(`Ошибка регистрации: ${err}`);
+        setIsDoneSignUp(false);
+        setIsInfoTooltipOpen(true);
+      }
+    );
+  }
+
+  function handleAuthorization(password, email) {
+    Auth.authorize(password, email).then(
+      (data) => {
+        setLoggedIn(true);
+        localStorage.setItem("token", data.token);
+        navigate("/");
+      },
+      (err) => console.log(`Ошибка авторизации: ${err}`)
+    );
+  }
+
+  function onSignOut() {
+    setLoggedIn(false);
+    localStorage.removeItem("token");
+    navigate("sign-in");
+  }
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
-        <Header />
-        <Main
-          onEditProfile={handleEditProfileClick}
-          onAddPlace={handleAddPlaceClick}
-          onEditAvatar={handleEditAvatarClick}
-          onCardClick={handleCardClick}
-          cards={cards}
-          onCardLike={handleCardLike}
-          onCardDelete={handleCardDelete}
+        <Header loggedEmail={loggedEmail} onSignOut={onSignOut} />
+
+        <Routes>
+          <Route
+            path="/sign-up"
+            element={<Registration onRegistration={handleRegistration} />}
+          />
+
+          <Route
+            path="/sign-in"
+            element={<Login onAuthorization={handleAuthorization} />}
+          />
+
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute
+                element={Main}
+                onEditProfile={handleEditProfileClick}
+                onAddPlace={handleAddPlaceClick}
+                onEditAvatar={handleEditAvatarClick}
+                onCardClick={handleCardClick}
+                cards={cards}
+                onCardLike={handleCardLike}
+                onCardDelete={handleCardDelete}
+                loggedIn={loggedIn}
+              />
+            }
+          />
+
+          <Route path="*" element={<Navigate to="/sign-in" />} />
+        </Routes>
+
+        <InfoTooltip
+          isOpen={isInfoTooltipOpen}
+          onClose={closeAllPopups}
+          isDoneSignUp={isDoneSignUp}
+          infoText={isDoneSignUp 
+            ? 'Вы успешно зарегистрировались!'
+            : 'Что-то пошло не так! Попробуйте ещё раз.'}
         />
 
         {/* <!-- ПОПАП РЕДАКТИРОВАТЬ ПРОФИЛЬ --> */}
