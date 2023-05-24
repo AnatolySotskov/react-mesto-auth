@@ -32,8 +32,6 @@ function App() {
   const [loggedEmail, setLoggedEmail] = useState("");
   const [isInfoTooltipOpen, setIsInfoTooltipOpen] = useState(false);
 
-  
-
   const handleCardClick = (props) => {
     setSelectedCard(props);
   };
@@ -43,6 +41,7 @@ function App() {
     setIsAddPlacePopupOpen(false);
     setIsEditAvatarPopupOpen(false);
     setSelectedCard({});
+    setIsInfoTooltipOpen(false);
   };
 
   function getUserData() {
@@ -119,6 +118,23 @@ function App() {
       .catch((err) => console.log(`Ошибка обновления данных профиля: ${err}`));
   }
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      Auth.checkToken(token)
+        .then((res) => {
+          if (res) {
+            setLoggedEmail(res.data.email);
+            setLoggedIn(true);
+            navigate("/");
+          }
+        })
+        .catch(() => {
+          localStorage.removeItem("token");
+        });
+    }
+  }, [loggedIn]);
+
   const navigate = useNavigate();
 
   function handleRegistration(password, email) {
@@ -194,9 +210,11 @@ function App() {
           isOpen={isInfoTooltipOpen}
           onClose={closeAllPopups}
           isDoneSignUp={isDoneSignUp}
-          infoText={isDoneSignUp 
-            ? 'Вы успешно зарегистрировались!'
-            : 'Что-то пошло не так! Попробуйте ещё раз.'}
+          infoText={
+            isDoneSignUp
+              ? "Вы успешно зарегистрировались!"
+              : "Что-то пошло не так! Попробуйте ещё раз."
+          }
         />
 
         {/* <!-- ПОПАП РЕДАКТИРОВАТЬ ПРОФИЛЬ --> */}

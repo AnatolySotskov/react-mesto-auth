@@ -68,3 +68,22 @@
 @import url(./blocks/popup/__title/_delete/popup__title_delete.css);
 
 
+
+@import url(./blocks/form/form.css);
+@import url(./blocks/form/__container/form__container.css);
+@import url(./blocks/form/__title/form__title.css);
+@import url(./blocks/form/__input-container/form__input-container.css);
+@import url(./blocks/form/__input/form__input.css);
+@import url(./blocks/form/__input/__button-save/form__button-save.css);
+@import url(./blocks/form/__input/__button-save/__button-save_theme_dark/form__button-save_theme_dark.css);
+@import url(./blocks/form/__input/_theme/form__input_theme_dark.css);
+@import url(./blocks/form/__alternate-text/form__alternate-text.css);
+@import url(./blocks/form/__link/form__link.css);
+
+
+
+
+
+@import url(./blocks/popup/__container/_infoTooltip_align/popup__container_infotoltip_align.css);
+@import url(./blocks/popup/__title/_align_center/popup__title_align_center.css);
+

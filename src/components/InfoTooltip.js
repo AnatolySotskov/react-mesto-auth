@@ -6,7 +6,7 @@ import usePopupClose from '../hooks/usePopupClose';
 function InfoTooltip({isOpen, onClose, isDoneSignUp, infoText}) {
   usePopupClose(isOpen, onClose)
   return (
-    <div className={`popup ${isOpen && 'popup_active'}`}>
+    <div className={`popup ${isOpen && 'popup_visible'}`}>
       <div className="popup__container popup__container_infotoltip_align" >
         <button
           type="button"

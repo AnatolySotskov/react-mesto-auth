@@ -13,7 +13,7 @@ function Header({ loggedEmail, onSignOut}) {
       {location.pathname === '/sign-in' 
         && <span className='header__info'><Link className='header__link' to='/sign-up'>Регистрация</Link></span>}
       {location.pathname === '/sign-up' 
-        && <span className='header__info'><Link className='header__link' to='/sign-in'>Вход</Link></span>}
+        && <span className='header__info'><Link className='header__link' to='/sign-in'>Войти</Link></span>}
       
     </header>
   );
