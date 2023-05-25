@@ -1,0 +1,25 @@
+.profile__profile-info {
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: auto auto;
+    gap: 12px;
+    max-width: 550px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+@media screen and (max-width: 900px) {
+    .profile__profile-info {
+        gap: 14px;
+        margin: 26px auto 36px;
+        max-width: 282px;
+    }    
+  }
+
+  @media screen and (max-width: 320px) {
+    .profile__profile-info {
+        gap: 10px;
+        min-height: 54px;
+    }    
+  }
+    

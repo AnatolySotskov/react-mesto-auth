@@ -1,0 +1,11 @@
+.card {
+    display: grid;
+    grid-template-rows: calc(282/361*100%) 1fr;
+    background-color: #fff;
+    max-width: 282px;
+    max-height: 362px;
+    box-sizing: border-box;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+}
